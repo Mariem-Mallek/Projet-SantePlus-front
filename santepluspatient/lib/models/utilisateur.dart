@@ -1,29 +1,47 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Utilisateur {
-  final String id;
-  final String nom;
-  final String prenom;
-  final String email;
-  final String mdp;
-  final String image;
-  final String role;
-  final DateTime dateNaiss;
-  final String sexe;
-  final double poids;
-  final double taille;
+  final String? id;
+  final String? nom;
+  final String? prenom;
+  final String? email;
+  final String? mdp;
+  final String? image;
+  final String? role;
+  final DateTime? dateNaiss;
+  final String? sexe;
+  final double? poids;
+  final double? taille;
 
   Utilisateur({
-    required this.id,
-    required this.nom,
-    required this.prenom,
+    this.id,
+    this.nom,
+    this.prenom,
     required this.email,
     required this.mdp,
-    required this.image,
-    required this.role,
-    required this.dateNaiss,
-    required this.sexe,
-    required this.poids,
-    required this.taille,
+    this.image,
+    this.role,
+    this.dateNaiss,
+    this.sexe,
+    this.poids,
+    this.taille,
   });
+
+  Utilisateur setId(String IdUser) {
+    return Utilisateur(
+      id: IdUser,
+      email: email,
+      nom: nom,
+      prenom: prenom,
+      mdp: mdp,
+      image: image,
+      role: role,
+      dateNaiss: dateNaiss,
+      sexe: sexe,
+      poids: poids,
+      taille: taille,
+    );
+  }
 
   factory Utilisateur.fromJson(Map<String, dynamic> json) {
     return Utilisateur(
@@ -50,10 +68,28 @@ class Utilisateur {
       'mdp': mdp,
       'image': image,
       'role': role,
-      'dateNaiss': dateNaiss.toIso8601String(),
+      'dateNaiss': dateNaiss,
       'sexe': sexe,
       'poids': poids,
       'taille': taille,
     };
+  }
+
+   factory Utilisateur.fromSnapshot(DocumentSnapshot snapshot) {
+    var data = snapshot.data() as Map<String, dynamic>;
+    return Utilisateur(
+      id: snapshot.id,
+      nom: data['nom'] ?? '',
+      email: data['email'] ?? '',
+      prenom: data['prenom'] ?? '',
+      mdp: data['mdp'] ?? '',
+      image: data['image'] ?? 'utilisateur.png',
+      role: data['role'] ?? 'patient',
+      dateNaiss: (data['dateNaiss'] as Timestamp).toDate(),
+      sexe: data['sexe'] ?? '',
+      poids: (data['poids'] as num).toDouble(),
+      taille: (data['taille'] as num).toDouble(),
+      
+    );
   }
 }

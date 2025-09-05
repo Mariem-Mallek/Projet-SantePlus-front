@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:santepluspatient/screens/login/signin_page.dart';
 import 'package:santepluspatient/utils/constants/colors.dart';
+
 
 class AccueilPage extends StatelessWidget {
   const AccueilPage({super.key});
@@ -33,7 +35,7 @@ class AccueilPage extends StatelessWidget {
                 "Prenez soin de\nvotre santé !",
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: isDark ? AppColors.white : const Color.fromARGB(255, 201, 17, 17),
+                      color: isDark ? AppColors.white : AppColors.primaryRed,
                       fontWeight: FontWeight.w700,
                     ),
               ),
@@ -54,7 +56,6 @@ class AccueilPage extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       color: isDark ? AppColors.white : const Color.fromARGB(255, 83, 80, 80),
-                      fontWeight: FontWeight.w500,
                     ),
               ),
 
@@ -64,12 +65,17 @@ class AccueilPage extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/signin');
+                  onPressed: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SigninPage(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    backgroundColor: const Color.fromARGB(255, 172, 41, 41),
+                    backgroundColor: AppColors.primaryRed,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
