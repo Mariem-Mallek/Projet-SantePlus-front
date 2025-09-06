@@ -7,7 +7,7 @@ class AuthRepo extends GetxController {
   static AuthRepo get instance => Get.find();
   final _db = FirebaseFirestore.instance;
 
-  //Variables
+//Variables
   final _auth = FirebaseAuth.instance;
   late final Rx<User?> firebaseUser;
   var verificationId = ''.obs;
@@ -35,12 +35,11 @@ class AuthRepo extends GetxController {
       return false;
     }
   }
-  //Sign In
 
+//Sign In
   Future<bool?> SignIn(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-
       print("succes");
       return true;
     } on FirebaseAuthException catch (e) {
@@ -62,21 +61,20 @@ class AuthRepo extends GetxController {
     }
   }
 
-  //Logout
+//Logout
   Future<void> logout() async => await _auth.signOut();
 
-  //Get User
+//Get User
   Future<Utilisateur> getUserDetails(String email) async {
     final snapshot = await _db
         .collection("usersPatient")
         .where("email", isEqualTo: email)
         .get();
     final userData = snapshot.docs.map((e) => Utilisateur.fromSnapshot(e)).single;
-
     return userData;
   }
 
-  //Update User
+//Update User
   Future<void> updateUserRecord(Utilisateur user) async {
     await _db.collection("usersPatient").doc(user.id).update(user.toJson());
   }

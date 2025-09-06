@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:santepluspatient/controllers/auth_controller.dart';
 import 'package:santepluspatient/models/utilisateur.dart';
 import 'package:santepluspatient/screens/login/accueil_page.dart';
+import 'package:santepluspatient/screens/login/signup_page.dart';
 import 'package:santepluspatient/utils/constants/colors.dart';
 
 class SigninPage extends StatefulWidget {
@@ -216,7 +217,12 @@ class _SigninPageState extends State<SigninPage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/signup');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SignupPage(),
+                      ),
+                    );
                   },
                   child: RichText(
                     textAlign: TextAlign.center,

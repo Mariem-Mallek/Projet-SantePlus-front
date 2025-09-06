@@ -9,6 +9,7 @@ class Utilisateur {
   final String? image;
   final String? role;
   final DateTime? dateNaiss;
+  final String? numTel;
   final String? sexe;
   final double? poids;
   final double? taille;
@@ -22,6 +23,7 @@ class Utilisateur {
     this.image,
     this.role,
     this.dateNaiss,
+    this.numTel,
     this.sexe,
     this.poids,
     this.taille,
@@ -37,6 +39,7 @@ class Utilisateur {
       image: image,
       role: role,
       dateNaiss: dateNaiss,
+      numTel: numTel,
       sexe: sexe,
       poids: poids,
       taille: taille,
@@ -53,6 +56,7 @@ class Utilisateur {
       image: json['image'] ?? "utilisateur.png",
       role: json['role'],
       dateNaiss: DateTime.parse(json['dateNaiss']),
+      numTel: json['numTel'],
       sexe: json['sexe'],
       poids: (json['poids'] as num).toDouble(),
       taille: (json['taille'] as num).toDouble(),
@@ -69,6 +73,7 @@ class Utilisateur {
       'image': image,
       'role': role,
       'dateNaiss': dateNaiss,
+      'numTel': numTel,
       'sexe': sexe,
       'poids': poids,
       'taille': taille,
@@ -86,10 +91,10 @@ class Utilisateur {
       image: data['image'] ?? 'utilisateur.png',
       role: data['role'] ?? 'patient',
       dateNaiss: (data['dateNaiss'] as Timestamp).toDate(),
+      numTel: data['numTel'] ?? '',
       sexe: data['sexe'] ?? '',
       poids: (data['poids'] as num).toDouble(),
       taille: (data['taille'] as num).toDouble(),
-      
     );
   }
 }
