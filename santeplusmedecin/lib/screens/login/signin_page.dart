@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
-import 'package:santepluspatient/controllers/auth_controller.dart';
-import 'package:santepluspatient/models/utilisateur.dart';
-import 'package:santepluspatient/screens/home/home_pages.dart';
-import 'package:santepluspatient/screens/login/signup_page.dart';
-import 'package:santepluspatient/utils/constants/colors.dart';
+import 'package:santeplusmedecin/controllers/auth_controller.dart';
+import 'package:santeplusmedecin/models/utilisateur.dart';
+import 'package:santeplusmedecin/screens/login/accueil_page.dart';
+import 'package:santeplusmedecin/screens/login/signup_page.dart';
+import 'package:santeplusmedecin/utils/constants/colors.dart';
 
 class SigninPage extends StatefulWidget {
   const SigninPage({super.key});
@@ -74,7 +74,7 @@ class _SigninPageState extends State<SigninPage> {
                                 text: "Bienvenue sur \nl'Application ",
                               ),
                               TextSpan(
-                                text: "Patient",
+                                text: "Medecin",
                                 style: TextStyle(
                                   color: AppColors.primaryRed,
                                 ),
@@ -199,7 +199,7 @@ class _SigninPageState extends State<SigninPage> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HomePage(user: usr),
+                                builder: (context) => AccueilPage(),
                               ),
                             );
                           }

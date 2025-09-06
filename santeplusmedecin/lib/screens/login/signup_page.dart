@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
-import 'package:santepluspatient/controllers/auth_controller.dart';
-import 'package:santepluspatient/models/utilisateur.dart';
-import 'package:santepluspatient/screens/home/home_pages.dart';
-import 'package:santepluspatient/screens/login/signin_page.dart';
-import 'package:santepluspatient/utils/constants/colors.dart';
+import 'package:santeplusmedecin/controllers/auth_controller.dart';
+import 'package:santeplusmedecin/models/utilisateur.dart';
+import 'package:santeplusmedecin/screens/login/accueil_page.dart';
+import 'package:santeplusmedecin/screens/login/signin_page.dart';
+import 'package:santeplusmedecin/utils/constants/colors.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -19,6 +19,8 @@ class _SignupPageState extends State<SignupPage> {
   late TextEditingController _passwordController;
   late TextEditingController _nomController;
   late TextEditingController _phoneController;
+  late TextEditingController _specialiteController;
+  late TextEditingController _localController ;
   bool _isChecked = false;
   bool _passwordVisible = false;
   bool satusSignUp = false;
@@ -32,6 +34,8 @@ class _SignupPageState extends State<SignupPage> {
     _passwordController = TextEditingController();
     _nomController = TextEditingController();
     _phoneController = TextEditingController();
+    _specialiteController = TextEditingController();
+    _localController = TextEditingController();
     _formkey = GlobalKey<FormState>();
     super.initState();
   }
@@ -42,6 +46,8 @@ class _SignupPageState extends State<SignupPage> {
     _passwordController.dispose();
     _nomController.dispose();
     _phoneController.dispose();
+    _specialiteController.dispose();
+    _localController.dispose();
     super.dispose();
   }
 
@@ -88,7 +94,7 @@ class _SignupPageState extends State<SignupPage> {
                             context,
                           ).inputDecorationTheme.labelStyle,
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 20),
                         TextFormField(
                           controller: _nomController,
                           maxLines: 1,
@@ -167,6 +173,36 @@ class _SignupPageState extends State<SignupPage> {
                                   "Le mot de passe ne doit pas comporter plus de 15 caractères",
                             ),
                           ]).call,
+                        ),
+                        SizedBox(height: 10),
+                        Divider(),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          controller: _specialiteController,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                            hintText: "Entrez votre Spécialitée",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            prefixIcon: Icon(Icons.person_outline_rounded),
+                          ),
+                          style:
+                              Theme.of(context).inputDecorationTheme.labelStyle,
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          controller: _localController,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                            hintText: "Entrez votre Addresse",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            prefixIcon: Icon(Icons.location_on_outlined),
+                          ),
+                          style:
+                              Theme.of(context).inputDecorationTheme.labelStyle,
                         ),
                         SizedBox(height: 10),
                         TextFormField(
@@ -254,7 +290,7 @@ class _SignupPageState extends State<SignupPage> {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => HomePage(user: usr),
+                                      builder: (context) => AccueilPage(),
                                     ),
                                   );
                                 }

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "456784075433",
+    "project_id": "santeplus-5dbf0",
+    "storage_bucket": "santeplus-5dbf0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:456784075433:android:addd7ea6db6bbeea3ba7b8",
+        "android_client_info": {
+          "package_name": "com.example.santeplusmedecin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxKzJ2uw5nEelwRXdOGYimie4fSBf4hm8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:456784075433:android:0c4b81fb7bcffdd43ba7b8",
+        "android_client_info": {
+          "package_name": "com.example.santepluspatient"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxKzJ2uw5nEelwRXdOGYimie4fSBf4hm8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

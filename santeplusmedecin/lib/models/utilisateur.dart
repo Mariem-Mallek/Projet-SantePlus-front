@@ -1,33 +1,56 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Utilisateur {
-  final String id;
-  final String nom;
-  final String prenom;
-  final String email;
-  final String mdp;
-  final String image;
-  final String role;
-  final DateTime dateNaiss;
-  final String numProfessionnel;
-  final String specialite;
-  final double latitude;
-  final double longitude;
-  final String ville;
+  final String? id;
+  final String? nom;
+  final String? prenom;
+  final String? email;
+  final String? mdp;
+  final String? image;
+  final String? role;
+  final DateTime? dateNaiss;
+  final String? numTel;
+  final String? numProfessionnel;
+  final String? specialite;
+  final double? latitude;
+  final double? longitude;
+  final String? ville;
 
   Utilisateur({
-    required this.id,
-    required this.nom,
-    required this.prenom,
-    required this.email,
-    required this.mdp,
-    required this.image,
-    required this.role,
-    required this.dateNaiss,
-    required this.numProfessionnel,
-    required this.specialite,
-    required this.latitude,
-    required this.longitude,
-    required this.ville,
+    this.id,
+    this.nom,
+    this.prenom,
+    this.email,
+    this.mdp,
+    this.image,
+    this.role,
+    this.dateNaiss,
+    this.numTel,
+    this.numProfessionnel,
+    this.specialite,
+    this.latitude,
+    this.longitude,
+    this.ville,
   });
+
+  Utilisateur setId(String IdUser) {
+    return Utilisateur(
+      id: IdUser,
+      email: email,
+      nom: nom,
+      prenom: prenom,
+      mdp: mdp,
+      image: image,
+      role: role,
+      dateNaiss: dateNaiss,
+      numTel: numTel,
+      numProfessionnel: numProfessionnel,
+      specialite: specialite,
+      latitude: latitude,
+      longitude: longitude,
+      ville: ville,
+    );
+  }
 
   factory Utilisateur.fromJson(Map<String, dynamic> json) {
     return Utilisateur(
@@ -39,6 +62,7 @@ class Utilisateur {
       image: json['image'] ?? "utilisateur.png",
       role: json['role'],
       dateNaiss: DateTime.parse(json['dateNaiss']),
+      numTel: json['numTel'],
       numProfessionnel: json['numProfessionnel'],
       specialite: json['specialite'],
       latitude: (json['latitude'] as num).toDouble(),
@@ -56,12 +80,33 @@ class Utilisateur {
       'mdp': mdp,
       'image': image,
       'role': role,
-      'dateNaiss': dateNaiss.toIso8601String(),
+      'dateNaiss': dateNaiss,
+      'numTel': numTel,
       'numProfessionnel': numProfessionnel,
       'specialite': specialite,
       'latitude': latitude,
       'longitude': longitude,
       'ville': ville,
     };
+  }
+
+  factory Utilisateur.fromSnapshot(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+    return Utilisateur(
+      id: snapshot.id,
+      nom: data['nom'],
+      prenom: data['prenom'],
+      email: data['email'],
+      mdp: data['mdp'],
+      image: data['image'] ?? "utilisateur.png",
+      role: data['role'],
+      dateNaiss: (data['dateNaiss'] as Timestamp).toDate(),
+      numTel: data['numTel'],
+      numProfessionnel: data['numProfessionnel'],
+      specialite: data['specialite'],
+      latitude: (data['latitude'] as num).toDouble(),
+      longitude: (data['longitude'] as num).toDouble(),
+      ville: data['ville'],
+    );
   }
 }
