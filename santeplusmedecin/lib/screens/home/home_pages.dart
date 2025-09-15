@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:santepluspatient/screens/home/nav_dossier_page.dart';
-import 'package:santepluspatient/screens/home/nav_home_page.dart';
-import 'package:santepluspatient/screens/home/nav_profil_page.dart';
-import 'package:santepluspatient/utils/constants/colors.dart';
+import 'package:santeplusmedecin/utils/constants/colors.dart';
+import 'package:santeplusmedecin/screens/home/nav_dossier_page.dart';
+import 'package:santeplusmedecin/screens/home/nav_home_page.dart';
+import 'package:santeplusmedecin/screens/home/nav_profil_page.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key,required this.token});

@@ -1,38 +1,58 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:santeplusmedecin/models/utilisateur.dart';
-import '../repository/auth_repo.dart';
+import 'package:santeplusmedecin/utils/constants/api_constant.dart';
 
 class AuthController extends GetxController {
   static AuthController get instance => Get.find();
-  final _authRepo = Get.put(AuthRepo());
 
-  Future<bool?> createUserController(Utilisateur user) async {
-    bool? status = await _authRepo.SignUp(user.email!, user.mdp!);
-    if (status == true) await _authRepo.createUser(user);
-    return status;
-  }
+//Sign in
+  Future<Map<String, dynamic>> signinController(Utilisateur user) async {
+    var reqBody = {"email": user.email, "mdp": user.mdp};
+    var response = await http.post(
+      Uri.parse(login),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(reqBody),
+    );
+    var jsonResponse = jsonDecode(response.body);
 
-  Future<bool?> loginUserController(Utilisateur user) async {
-    return _authRepo.SignIn(user.email!, user.mdp!);
-  }
-
-  Future<bool?> forguetPasswordController(String email) async {
-    return _authRepo.ForguetPassword(email);
-  }
-
-  Future<void> logoutController() async {
-    _authRepo.logout();
-  }
-
-  getUserDetailsController() async {
-    final email = _authRepo.firebaseUser.value?.email;
-    print("email= ${email}");
-    if (email != null) {
-      return _authRepo.getUserDetails(email);
+    if (jsonResponse['token'] != null) {
+      var myToken = jsonResponse['token'];
+      return {
+        "status": true,
+        "message": jsonResponse['message'],
+        "token": myToken,
+      };
+    } else {
+      return {
+        "status": false,
+        "error": jsonResponse['message'] ?? "Échec de connexion",
+      };
     }
   }
 
-  updateUserController(Utilisateur user) async {
-    _authRepo.updateUserRecord(user);
+//Sign up
+  Future<Map<String, dynamic>> signupController(Utilisateur user) async {
+    var reqBody = {"nom":user.nom, "prenom":user.prenom, "email": user.email, "mdp":user.mdp, "numTel": user.numTel};
+    var response = await http.post(
+      Uri.parse(register),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(reqBody),
+    );
+    var jsonResponse = jsonDecode(response.body);
+
+    if (jsonResponse['_id'] != null) {
+    return {
+      "status": true,
+      "success": "Inscription réussie",
+      "user": jsonResponse,
+    };
+  } else {
+    return {
+      "status": false,
+      "error": jsonResponse['message'] ?? "Échec de connexion",
+    };
+  }
   }
 }

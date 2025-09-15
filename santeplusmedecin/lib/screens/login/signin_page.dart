@@ -3,9 +3,10 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:santeplusmedecin/controllers/auth_controller.dart';
 import 'package:santeplusmedecin/models/utilisateur.dart';
-import 'package:santeplusmedecin/screens/login/accueil_page.dart';
+import 'package:santeplusmedecin/screens/home/home_pages.dart';
 import 'package:santeplusmedecin/screens/login/signup_page.dart';
 import 'package:santeplusmedecin/utils/constants/colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SigninPage extends StatefulWidget {
   const SigninPage({super.key});
@@ -21,12 +22,18 @@ class _SigninPageState extends State<SigninPage> {
   bool _passwordVisible = false;
   bool satusSignIn = false;
   final controller = Get.put(AuthController());
+  late SharedPreferences prefs;
+
+  void initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+  }
 
   @override
   void initState() {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _formkey = GlobalKey<FormState>();
+    initSharedPref();
     super.initState();
   }
 
@@ -189,20 +196,28 @@ class _SigninPageState extends State<SigninPage> {
                             mdp: _passwordController.text.trim(),
                           );
 
-                          satusSignIn =
-                              (await controller.loginUserController(user))!;
-                          if (satusSignIn) {
-                            Utilisateur usr =
-                                (await controller.getUserDetailsController())!;
-                            print(
-                                "Object Doctor Sign In name=${usr.nom} \n id=${usr.id}");
-                            Navigator.pushReplacement(
+                          var result = await controller.signinController(user);
+
+                          if (result['status'] == true) {
+                            //email et password valid
+                            var mytoken = result['token'];
+                            prefs.setString('token', mytoken);
+
+                            Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AccueilPage(),
+                                builder: (context) => HomePage(token: mytoken),
                               ),
+                              (Route<dynamic> route) => false,
+                            );
+                          } else {
+                            //email et password invalid
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(result['error'])),
                             );
                           }
+                        } else {
+                          print("Echecs de validation");
                         }
                       },
                       child: Text(

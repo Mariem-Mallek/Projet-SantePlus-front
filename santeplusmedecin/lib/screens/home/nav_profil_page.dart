@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:santepluspatient/utils/constants/colors.dart';
+import 'package:santeplusmedecin/utils/constants/colors.dart';
 
 class NavProfilPage extends StatefulWidget {
   const NavProfilPage({super.key, required this.token});

@@ -6,10 +6,20 @@
 const url = 'http://192.168.1.103:5000/';
 
 //Auth
-const register = "${url}auth/registration";
-const login = "${url}auth/login";
+const register = "${url}users/addPatient";
+const login = "${url}users/login";
 
-//Todo
-const storeTodo = "${url}todo/storeTodo";
-const getTodo = "${url}todo/getUserTodoList";
-const deleteTodoItem = "${url}todo/deleteTodo";
+//Ordonnance
+const getOrdonnance = "${url}ordonnances/getOrdonnanceByIdPatient/";
+const addOrdonnance = "${url}ordonnances/addOrdonnance";
+const updateOrdonnance = "${url}ordonnances/updateOrdonnance/";
+const deleteOrdonnance = "${url}ordonnances/deleteOrdonnance/";
+
+
+//Rendez-vous
+const getRdv = "${url}rendezvous/getRdvByIdPatient/";
+const addRdv = "${url}rendezvous/addRdv";
+const updateRdv = "${url}rendezvous/updateRdv/";
+const deleteRdv = "${url}rendezvous/deleteRdv/";
+
+

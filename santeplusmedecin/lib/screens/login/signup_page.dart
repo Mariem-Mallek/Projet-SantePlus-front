@@ -3,9 +3,10 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:santeplusmedecin/controllers/auth_controller.dart';
 import 'package:santeplusmedecin/models/utilisateur.dart';
-import 'package:santeplusmedecin/screens/login/accueil_page.dart';
+import 'package:santeplusmedecin/screens/home/home_pages.dart';
 import 'package:santeplusmedecin/screens/login/signin_page.dart';
 import 'package:santeplusmedecin/utils/constants/colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -18,6 +19,7 @@ class _SignupPageState extends State<SignupPage> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late TextEditingController _nomController;
+  late TextEditingController _prenomController;
   late TextEditingController _phoneController;
   late TextEditingController _specialiteController;
   late TextEditingController _localController ;
@@ -33,6 +35,7 @@ class _SignupPageState extends State<SignupPage> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _nomController = TextEditingController();
+    _prenomController = TextEditingController();
     _phoneController = TextEditingController();
     _specialiteController = TextEditingController();
     _localController = TextEditingController();
@@ -45,6 +48,7 @@ class _SignupPageState extends State<SignupPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _nomController.dispose();
+    _prenomController.dispose();
     _phoneController.dispose();
     _specialiteController.dispose();
     _localController.dispose();
@@ -96,7 +100,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
-                          controller: _nomController,
+                          controller: _prenomController,
                           maxLines: 1,
                           decoration: InputDecoration(
                             hintText: "Entrez votre prénom",
@@ -218,6 +222,17 @@ class _SignupPageState extends State<SignupPage> {
                           style: Theme.of(
                             context,
                           ).inputDecorationTheme.labelStyle,
+                          validator: MultiValidator([
+                            RequiredValidator(
+                              errorText:
+                                  "* Veuillez saisir un numéro de téléphone",
+                            ),
+                            PatternValidator(
+                              r'^[0-9]{8}$',
+                              errorText:
+                                  "Le numéro doit contenir exactement 8 chiffres",
+                            ),
+                          ]).call,
                         ),
                         SizedBox(height: 10),
                       ],
@@ -269,34 +284,48 @@ class _SignupPageState extends State<SignupPage> {
                             ? AppColors.primaryRed
                             : AppColors.grey,
                       ),
-                      onPressed: _isChecked
-                          ? () async {
-                              if (_formkey.currentState!.validate()) {
-                                final user = Utilisateur(
-                                  email: _emailController.text.trim(),
-                                  mdp: _passwordController.text.trim(),
-                                  nom: _nomController.text.trim(),
-                                  numTel: _phoneController.text.trim(),
-                                );
+                      onPressed: () async {
+                        if (_formkey.currentState!.validate()) {
+                          final user = Utilisateur(
+                            email: _emailController.text.trim(),
+                            mdp: _passwordController.text.trim(),
+                            nom: _nomController.text.trim(),
+                            prenom: _prenomController.text.trim(),
+                            numTel: _phoneController.text.trim(),
+                          );
 
-                                satusSignUp = (await controller
-                                    .createUserController(user))!;
-                                if (satusSignUp) {
-                                  Utilisateur usr = (await controller
-                                      .getUserDetailsController())!;
-                                  print(
-                                    "Object Doctor Sign In name=${usr.nom} \n id=${usr.id}",
-                                  );
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => AccueilPage(),
-                                    ),
-                                  );
-                                }
-                              }
+                          var result = await controller.signupController(user);
+
+                          if (result['status'] == true) {
+                            // Sauvegarder le token si disponible
+                            if (result.containsKey('token')) {
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              prefs.setString('token', result['token']);
                             }
-                          : null,
+
+                            // Afficher le SnackBar
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(result['success'])),
+                            );
+
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    HomePage(token: result['token'] ?? ""),
+                              ),
+                              (Route<dynamic> route) => false,
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(result['error'])),
+                            );
+                          }
+                        } else {
+                          print("Échec de validation");
+                        }
+                      },
                       child: Text(
                         "Sign Up",
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(

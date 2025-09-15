@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Utilisateur {
   final String? id;
   final String? nom;
@@ -90,23 +88,4 @@ class Utilisateur {
     };
   }
 
-  factory Utilisateur.fromSnapshot(DocumentSnapshot snapshot) {
-    final data = snapshot.data() as Map<String, dynamic>;
-    return Utilisateur(
-      id: snapshot.id,
-      nom: data['nom'],
-      prenom: data['prenom'],
-      email: data['email'],
-      mdp: data['mdp'],
-      image: data['image'] ?? "utilisateur.png",
-      role: data['role'],
-      dateNaiss: (data['dateNaiss'] as Timestamp).toDate(),
-      numTel: data['numTel'],
-      numProfessionnel: data['numProfessionnel'],
-      specialite: data['specialite'],
-      latitude: (data['latitude'] as num).toDouble(),
-      longitude: (data['longitude'] as num).toDouble(),
-      ville: data['ville'],
-    );
-  }
 }

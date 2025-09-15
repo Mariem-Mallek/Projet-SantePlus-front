@@ -16,7 +16,9 @@ class _NavHomePageState extends State<NavHomePage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Center(child: Image.asset('assets/images/image_home.png')),
+              Center(
+                child: Image.asset("assets/images/image_home.png"),
+              ),
             ],
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:santepluspatient/controllers/auth_controller.dart';
 import 'package:santepluspatient/models/utilisateur.dart';
 import 'package:santepluspatient/screens/home/home_pages.dart';
@@ -21,12 +22,18 @@ class _SigninPageState extends State<SigninPage> {
   bool _passwordVisible = false;
   bool satusSignIn = false;
   final controller = Get.put(AuthController());
+  late SharedPreferences prefs;
+
+  void initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+  }
 
   @override
   void initState() {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _formkey = GlobalKey<FormState>();
+    initSharedPref();
     super.initState();
   }
 
@@ -44,10 +51,7 @@ class _SigninPageState extends State<SigninPage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           flexibleSpace: Center(
-            child: Image.asset(
-              "assets/images/logo.png",
-              height: 40,
-            ),
+            child: Image.asset("assets/images/logo.png", height: 40),
           ),
           backgroundColor: Colors.transparent,
         ),
@@ -65,19 +69,13 @@ class _SigninPageState extends State<SigninPage> {
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium!
+                            style: Theme.of(context).textTheme.headlineMedium!
                                 .copyWith(fontWeight: FontWeight.bold),
                             children: <TextSpan>[
-                              TextSpan(
-                                text: "Bienvenue sur \nl'Application ",
-                              ),
+                              TextSpan(text: "Bienvenue sur \nl'Application "),
                               TextSpan(
                                 text: "Patient",
-                                style: TextStyle(
-                                  color: AppColors.primaryRed,
-                                ),
+                                style: TextStyle(color: AppColors.primaryRed),
                               ),
                             ],
                           ),
@@ -85,9 +83,7 @@ class _SigninPageState extends State<SigninPage> {
                         SizedBox(height: 20),
                         Text(
                           "Se connecter",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
+                          style: Theme.of(context).textTheme.headlineMedium!
                               .copyWith(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
@@ -102,18 +98,18 @@ class _SigninPageState extends State<SigninPage> {
                             ),
                             prefixIcon: Icon(Icons.email_outlined),
                           ),
-                          style:
-                              Theme.of(context).inputDecorationTheme.labelStyle,
-                          validator: MultiValidator(
-                            [
-                              RequiredValidator(
-                                  errorText:
-                                      "* Veuillez saisir une adresse e-mail"),
-                              EmailValidator(
-                                  errorText:
-                                      "Veuillez saisir une adresse e-mail valide"),
-                            ],
-                          ).call,
+                          style: Theme.of(
+                            context,
+                          ).inputDecorationTheme.labelStyle,
+                          validator: MultiValidator([
+                            RequiredValidator(
+                              errorText: "* Veuillez saisir une adresse e-mail",
+                            ),
+                            EmailValidator(
+                              errorText:
+                                  "Veuillez saisir une adresse e-mail valide",
+                            ),
+                          ]).call,
                         ),
                         SizedBox(height: 10),
                         TextFormField(
@@ -139,16 +135,21 @@ class _SigninPageState extends State<SigninPage> {
                               },
                             ),
                           ),
-                          style:
-                              Theme.of(context).inputDecorationTheme.labelStyle,
+                          style: Theme.of(
+                            context,
+                          ).inputDecorationTheme.labelStyle,
                           validator: MultiValidator([
                             RequiredValidator(errorText: "* Obligatoire"),
-                            MinLengthValidator(6,
-                                errorText:
-                                    "Le mot de passe doit comporter au moins 6 caractères"),
-                            MaxLengthValidator(15,
-                                errorText:
-                                    "Le mot de passe ne doit pas comporter plus de 15 caractères")
+                            MinLengthValidator(
+                              4,
+                              errorText:
+                                  "Le mot de passe doit comporter au moins 4 caractères",
+                            ),
+                            MaxLengthValidator(
+                              15,
+                              errorText:
+                                  "Le mot de passe ne doit pas comporter plus de 15 caractères",
+                            ),
                           ]).call,
                         ),
                         Align(
@@ -157,9 +158,7 @@ class _SigninPageState extends State<SigninPage> {
                             onPressed: () {},
                             child: Text(
                               "Mot de passe oublié ?",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge!
+                              style: Theme.of(context).textTheme.labelLarge!
                                   .copyWith(
                                     color: AppColors.primaryRed,
                                     fontWeight: FontWeight.bold,
@@ -189,28 +188,36 @@ class _SigninPageState extends State<SigninPage> {
                             mdp: _passwordController.text.trim(),
                           );
 
-                          satusSignIn =
-                              (await controller.loginUserController(user))!;
-                          if (satusSignIn) {
-                            Utilisateur usr =
-                                (await controller.getUserDetailsController())!;
-                            print(
-                                "Object Doctor Sign In name=${usr.nom} \n id=${usr.id}");
-                            Navigator.pushReplacement(
+                          var result = await controller.signinController(user);
+
+                          if (result['status'] == true) {
+                            //email et password valid
+                            var mytoken = result['token'];
+                            prefs.setString('token', mytoken);
+
+                            Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HomePage(user: usr),
+                                builder: (context) => HomePage(token: mytoken),
                               ),
+                              (Route<dynamic> route) => false,
+                            );
+                          } else {
+                            //email et password invalid
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(result['error'])),
                             );
                           }
+                        } else {
+                          print("Echecs de validation");
                         }
                       },
                       child: Text(
                         "Sign In",
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -219,9 +226,7 @@ class _SigninPageState extends State<SigninPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => SignupPage(),
-                      ),
+                      MaterialPageRoute(builder: (context) => SignupPage()),
                     );
                   },
                   child: RichText(
@@ -229,13 +234,13 @@ class _SigninPageState extends State<SigninPage> {
                     text: TextSpan(
                       style: Theme.of(context).textTheme.labelMedium!,
                       children: <TextSpan>[
-                        TextSpan(
-                          text: "Vous êtes nouveau ici ? ",
-                        ),
+                        TextSpan(text: "Vous êtes nouveau ici ? "),
                         TextSpan(
                           text: "Inscrivez-vous ici",
                           style: TextStyle(
-                              color: AppColors.primaryRed, fontWeight: FontWeight.bold),
+                            color: AppColors.primaryRed,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
